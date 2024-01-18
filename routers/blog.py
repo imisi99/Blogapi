@@ -1,14 +1,7 @@
 import csv 
 from fastapi import APIRouter, Form, Depends
 from pydantic import BaseModel
-<<<<<<< HEAD
 from datetime import datetime
-=======
-from typing import Optional
-from datetime import datetime
-from typing import Annotated
-
->>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 
 blog = APIRouter()
 
@@ -32,10 +25,6 @@ def Authorize(
                 return True
     return False
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 #Get all blogs
 @blog.get("/")
 def blog_home():
@@ -106,11 +95,7 @@ async def create_blog(
     else:
         return "Username or Password wrong, Click the change password route to change password if forgotten or click the signup route to signup if not a user  . "
 
-<<<<<<< HEAD
  
-=======
-
->>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 
 #Edit Blog
 @blog.put("/edit")
