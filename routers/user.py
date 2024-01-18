@@ -1,17 +1,18 @@
 import csv
-from fastapi import APIRouter, File, Form, UploadFile, Depends
+from fastapi import APIRouter, Form, Depends
 from typing import Annotated
-from pydantic import BaseModel
-
+from pydantic import BaseModel, Field
+from.blog import Authorize
 user = APIRouter()
 
 
 class User(BaseModel):
-    firstname:str
-    lastname : str
-    username : str
-    email : str
-    password : str
+    firstname : Annotated[str, Field(min_length= 3)]
+    lastname : Annotated[str, Field(min_length= 3)]
+    username : Annotated[str, Field(min_length=3, max_length=15)]
+    email : Annotated[str, Field()]
+    password : Annotated[str, Field(min_length=8)]
+
 
 def User_Authorize(
     username : str
@@ -21,8 +22,9 @@ def User_Authorize(
         for row in reader:
             if row["username"] == username:
                 return True
-            
+
     return False
+
 
 @user.post("/")
 def user_signup(
@@ -35,7 +37,7 @@ def user_signup(
         
     return f"{user.firstname} {user.lastname} Thank you for being a participant in this amazing blog"
     
-@user.put("/password")
+@user.put("/forgot-password")
 def change_password(
     username : str,
     new_password : str = Form(...),
@@ -65,3 +67,23 @@ def change_password(
             return "Password changed successfully"
     else:
         return "Username Incorrect, Try again."
+
+@user.delete("/delete-user")
+def delete_user(
+    authorized : bool = Depends(Authorize)
+):
+    if authorized:
+        rows = []
+        found = False
+        with open("u_data.csv", "r") as docs:
+            reader = csv.reader(docs)
+            header = next(reader)
+            for row in reader:
+                rows.append(row)
+                if str(row[2]) == Authorize.get("username") and str(row[4]) == Authorize.get("password"):
+                    found = True
+
+        if found:
+            with open("u_data.csv", "w") as docs:
+                writer = csv.writer
+                writer.writerow(header)

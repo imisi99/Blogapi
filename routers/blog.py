@@ -3,7 +3,6 @@ from fastapi import APIRouter, Form, Depends
 from pydantic import BaseModel
 from datetime import datetime
 
-
 blog = APIRouter()
 
 
@@ -96,7 +95,7 @@ async def create_blog(
     else:
         return "Username or Password wrong, Click the change password route to change password if forgotten or click the signup route to signup if not a user  . "
 
-
+ 
 
 #Edit Blog
 @blog.put("/edit")
