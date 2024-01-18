@@ -1,18 +1,33 @@
 import csv
+<<<<<<< HEAD
 from fastapi import APIRouter, Form, Depends
 from typing import Annotated
 from pydantic import BaseModel, Field
 from.blog import Authorize
+=======
+from fastapi import APIRouter, File, Form, UploadFile, Depends
+from typing import Annotated
+from pydantic import BaseModel
+
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 user = APIRouter()
 
 
 class User(BaseModel):
+<<<<<<< HEAD
     firstname : Annotated[str, Field(min_length= 3)]
     lastname : Annotated[str, Field(min_length= 3)]
     username : Annotated[str, Field(min_length=3, max_length=15)]
     email : Annotated[str, Field()]
     password : Annotated[str, Field(min_length=8)]
 
+=======
+    firstname:str
+    lastname : str
+    username : str
+    email : str
+    password : str
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 
 def User_Authorize(
     username : str
@@ -22,10 +37,16 @@ def User_Authorize(
         for row in reader:
             if row["username"] == username:
                 return True
+<<<<<<< HEAD
 
     return False
 
 
+=======
+            
+    return False
+
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 @user.post("/")
 def user_signup(
     user : User
@@ -37,7 +58,11 @@ def user_signup(
         
     return f"{user.firstname} {user.lastname} Thank you for being a participant in this amazing blog"
     
+<<<<<<< HEAD
 @user.put("/forgot-password")
+=======
+@user.put("/password")
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
 def change_password(
     username : str,
     new_password : str = Form(...),
@@ -66,6 +91,7 @@ def change_password(
 
             return "Password changed successfully"
     else:
+<<<<<<< HEAD
         return "Username Incorrect, Try again."
 
 @user.delete("/delete-user")
@@ -87,3 +113,6 @@ def delete_user(
             with open("u_data.csv", "w") as docs:
                 writer = csv.writer
                 writer.writerow(header)
+=======
+        return "Username Incorrect, Try again."
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109

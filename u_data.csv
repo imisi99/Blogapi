@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 firstname,lastname,username,email,password
 Imisioluwa,Isong,Imisioluwa23,isongrichard234@gmail.com,Imisioluwa123.
 Emmanuel,Isong,Emmanuel23,isongemmanuel234@gmail.com,Emmanuel234.
 string,string,string,string,string
+=======
+firstname,lastname,username,email,password
+Imisioluwa,Isong,Imisioluwa23,isongrichard234@gmail.com,Imisioluwa123.
+Emmanuel,Isong,Emmanuel23,isongemmanuel234@gmail.com,Emmanuel234.
+>>>>>>> 54e0151c7e97fc060de1b1718efadeb76c8c2109
