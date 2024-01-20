@@ -1,8 +1,9 @@
 import csv
-from fastapi import APIRouter, Form, Depends
+from fastapi import APIRouter, Form, Depends, HTTPException
 from typing import Annotated
 from pydantic import BaseModel, Field
 from.blog import Authorize
+from starlette import status
 user = APIRouter()
 
 
@@ -26,18 +27,23 @@ def User_Authorize(
     return False
 
 
-@user.post("/")
+@user.post("/user-signup", status_code= status.HTTP_201_CREATED)
 def user_signup(
-    user : User
-
-):
+    user : User):  
+    user_create = False
     with open("u_data.csv", "a", newline='') as doc:
         writer = csv.writer(doc)
         writer.writerow([user.firstname, user.lastname, user.username, user.email, user.password])
+        user_create = True
+        if not user_create:
+            raise HTTPException(status_code= 400, detail= "Bad Request")
         
-    return f"{user.firstname} {user.lastname} Thank you for being a participant in this amazing blog"
+
+        return f"{user.firstname} {user.lastname} Thank you for being a participant in this amazing blog"
     
-@user.put("/forgot-password")
+        
+
+@user.put("/forgot-password", status_code= status.HTTP_202_ACCEPTED)
 def change_password(
     username : str,
     new_password : str = Form(...),
@@ -55,7 +61,7 @@ def change_password(
                     found = True
             
         if found:
-            with open("u_data.csv", "w")as doc:
+            with open("u_data.csv", "w", newline= '')as doc:
                 writer = csv.writer(doc)
                 writer.writerow(header)
                 for index, row in enumerate(rows):
@@ -65,11 +71,18 @@ def change_password(
                         writer.writerow(rows[index])
 
             return "Password changed successfully"
+        
+        else:
+            raise HTTPException(status_code= 404, detail= "Username not found")
+        
     else:
-        return "Username Incorrect, Try again."
+        raise HTTPException(status_code= 401, detail= "Unauthorized user")
+    
 
-@user.delete("/delete-user")
+
+@user.delete("/delete-user",status_code= status.HTTP_204_NO_CONTENT)
 def delete_user(
+    username : str,
     authorized : bool = Depends(Authorize)
 ):
     if authorized:
@@ -80,10 +93,21 @@ def delete_user(
             header = next(reader)
             for row in reader:
                 rows.append(row)
-                if str(row[2]) == Authorize.get("username") and str(row[4]) == Authorize.get("password"):
+                if str(row[2]) == username:
                     found = True
 
         if found:
-            with open("u_data.csv", "w") as docs:
-                writer = csv.writer
+            with open("u_data.csv", "w", newline= '') as docs:
+                writer = csv.writer(docs)
                 writer.writerow(header)
+                for row in rows:
+                    if str(row[2]) != username:
+                        writer.writerow(row)
+                
+            return "User deleted successfully"
+        else:
+            raise HTTPException(status_code=404, detail="User not found")
+    
+    else:
+        raise HTTPException(status_code= 401, detail= "Unauthorized user")
+
